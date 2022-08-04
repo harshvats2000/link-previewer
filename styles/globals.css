@@ -24,6 +24,9 @@
   /* Most modern browsers support this now. */
   color: rgba(255, 255, 255, 0.4);
 }
+img {
+  max-width: 100%;
+}
 body {
   background: #121212;
   color: rgba(255, 255, 255, 0.8);
@@ -61,8 +64,6 @@ header {
   outline: 2px solid rgba(255, 255, 255, 0.3);
 }
 .card {
-  display: flex;
-  align-items: center;
   border: 1px solid black;
   border-radius: 4px;
   padding: 10px;
@@ -93,14 +94,16 @@ header {
 }
 
 .img-container {
-  padding-right: 10px;
   display: grid;
   place-items: center;
+  margin-bottom: 10px;
 }
 
 h1 {
   text-align: center;
   margin: 0;
+  font-weight: 100;
+  font-size: 22px;
 }
 
 .error {

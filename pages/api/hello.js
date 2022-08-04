@@ -1,16 +1,20 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import jsdom from "jsdom";
+import { isValidUrl } from "../../utils";
 
 export default async function handler(req, res) {
   let { url } = req.query;
   const { JSDOM } = jsdom;
 
-  if (!isValidHttpUrl(url)) {
+  if (!isValidUrl(url)) {
     res.send("not valid url");
   }
 
   if (!url.startsWith("h")) {
     url = "https://" + url;
+  }
+  if (url.endsWith("/")) {
+    url = url.slice(0, -1);
   }
 
   let response;
@@ -26,31 +30,24 @@ export default async function handler(req, res) {
   res.setHeader("Content-Type", "text/html");
   const htmlString = await response.text();
 
-  const dom = new JSDOM(htmlString);
-
-  const result = getMeta(dom);
+  const result = getMeta(htmlString);
 
   res.send(result);
 
-  function getMeta(dom) {
+  function getMeta(htmlString) {
+    const dom = new JSDOM(htmlString);
     const { document } = dom.window;
+    let favicon = document.querySelector("link[rel='icon']")?.getAttribute("href");
+    if (favicon.startsWith("/")) {
+      favicon = url + favicon;
+    }
+    let sizeInBytes = new TextEncoder().encode(htmlString).length;
     return {
       desc: document.querySelector("meta[name='description']")?.getAttribute("content"),
       title: document.querySelector("title")?.textContent,
-      image: document.querySelector("meta[property='og:image']")?.getAttribute("content")
+      image: document.querySelector("meta[property='og:image']")?.getAttribute("content"),
+      favicon,
+      sizeInBytes
     };
-  }
-
-  function isValidHttpUrl(string) {
-    var pattern = new RegExp(
-      "^(https?:\\/\\/)?" + // protocol
-        "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-        "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-        "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-        "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-        "(\\#[-a-z\\d_]*)?$",
-      "i"
-    ); // fragment locator
-    return !!pattern.test(string);
   }
 }
