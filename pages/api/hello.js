@@ -38,7 +38,7 @@ export default async function handler(req, res) {
     const dom = new JSDOM(htmlString);
     const { document } = dom.window;
     let favicon = document.querySelector("link[rel='icon']")?.getAttribute("href");
-    if (favicon.startsWith("/")) {
+    if (favicon?.startsWith("/")) {
       favicon = url + favicon;
     }
     let sizeInBytes = new TextEncoder().encode(htmlString).length;
