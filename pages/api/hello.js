@@ -4,6 +4,7 @@ import { isValidUrl } from "../../utils";
 
 export default async function handler(req, res) {
   let { url } = req.query;
+  url = url?.trim();
   const { JSDOM } = jsdom;
 
   if (!isValidUrl(url)) {
@@ -27,7 +28,6 @@ export default async function handler(req, res) {
     res.send(error);
   }
 
-  res.setHeader("Content-Type", "text/html");
   const htmlString = await response.text();
 
   const result = getMeta(htmlString);

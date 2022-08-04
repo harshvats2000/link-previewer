@@ -51,7 +51,8 @@ export default function Home() {
   let fetchDebounce = _.debounce(fetchData, 500);
 
   const onChange = (e) => {
-    const url = e.target.value;
+    let url = e.target.value;
+    url = url.trim();
     if (!isValidUrl(url)) {
       handleError();
       return;
@@ -100,13 +101,13 @@ export default function Home() {
             </div>
           ) : null}
 
-          {data?.favicon && (
+          {!fetching && data?.favicon && (
             <div style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
               <span style={{ marginRight: 5 }}>Favicon: </span>
               <img src={data.favicon} />
             </div>
           )}
-          {data?.sizeInBytes && (
+          {!fetching && data?.sizeInBytes && (
             <div style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
               <span style={{ marginRight: 5 }}>Page Size: </span>
               {data.sizeInBytes} bytes
