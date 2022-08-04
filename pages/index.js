@@ -20,33 +20,51 @@ function isValidHttpUrl(string) {
 export default function Home() {
   const [data, setData] = useState(null);
   const [fetching, setFetching] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleError = (err) => {
+    if (err?.message) {
+      setError(err.message);
+    } else {
+      setError(null);
+    }
+    setData(null);
+    setFetching(false);
+  };
+
   const fetchData = (url) => {
     setFetching(true);
-    fetch(`http://localhost:3000/api/hello/?url=${url}`, {
+    setError(null);
+    fetch(`/api/hello/?url=${url}`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json"
       }
     })
-      .then((res) => res.json())
       .then((res) => {
-        console.log(res);
+        if (!res.ok) {
+          return res.json().then((json) => {
+            throw new Error(json.error);
+          });
+        }
+        return res.json();
+      })
+      .then((res) => {
         const { title, desc, image } = res;
         setData({ title, desc, image });
         setFetching(false);
       })
       .catch((err) => {
-        console.log(err);
-        setData(null);
-        setFetching(false);
+        handleError(err);
       });
   };
-  let fetchDebounce = _.debounce(fetchData, 1000);
+
+  let fetchDebounce = _.debounce(fetchData, 500);
 
   const onChange = (e) => {
     const url = e.target.value;
     if (!isValidHttpUrl(url)) {
-      setData(null);
+      handleError();
       return;
     }
     fetchDebounce(url);
@@ -63,7 +81,9 @@ export default function Home() {
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet"></link>
       </Head>
 
-      <h1>Link Previewer</h1>
+      <header>
+        <h1>Link Previewer</h1>
+      </header>
 
       <div className="container">
         <div>
@@ -90,6 +110,8 @@ export default function Home() {
               </div>
             </div>
           ) : null}
+
+          <p className="error">{error}</p>
         </div>
       </div>
     </div>

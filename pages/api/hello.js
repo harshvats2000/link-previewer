@@ -13,9 +13,14 @@ export default async function handler(req, res) {
     url = "https://" + url;
   }
 
-  let response = await fetch(url);
-  if (!response.ok) {
-    res.send("error");
+  let response;
+  try {
+    response = await fetch(url);
+  } catch (error) {
+    if (error.code === "ENOTFOUND") {
+      res.status(404).send({ error: "URL not found." });
+    }
+    res.send(error);
   }
 
   res.setHeader("Content-Type", "text/html");
@@ -24,7 +29,6 @@ export default async function handler(req, res) {
   const dom = new JSDOM(htmlString);
 
   const result = getMeta(dom);
-  console.log(result);
 
   res.send(result);
 
