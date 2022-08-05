@@ -23,16 +23,16 @@ export default async function handler(req, res) {
     response = await fetch(url);
   } catch (error) {
     if (error.code === "ENOTFOUND") {
-      res.status(404).send({ error: "URL not found." });
+      return res.status(404).send({ error: "URL not found." });
     }
-    res.send(error);
+    return res.send(error);
   }
 
   const htmlString = await response.text();
 
   const result = getMeta(htmlString);
 
-  res.send(result);
+  return res.send(result);
 
   function getMeta(htmlString) {
     const dom = new JSDOM(htmlString);

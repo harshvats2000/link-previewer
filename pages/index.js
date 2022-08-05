@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import * as _ from "lodash";
 import { isValidUrl } from "../utils";
@@ -9,6 +9,10 @@ export default function Home() {
   const [data, setData] = useState(null);
   const [fetching, setFetching] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    console.log(isValidUrl("www.youtube"));
+  }, []);
 
   const handleError = (err) => {
     if (err?.message) {
@@ -23,7 +27,7 @@ export default function Home() {
   const fetchData = (url) => {
     setFetching(true);
     setError(null);
-    fetch(`/api/preview/?url=${url}`, {
+    fetch(`/api/preview?url=${url}`, {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json"
@@ -77,7 +81,7 @@ export default function Home() {
 
       <div className="container">
         <div>
-          <input placeholder="Type url like www.example.com" onChange={onChange} />
+          <input placeholder="Type url like example.com" onChange={onChange} />
           {fetching ? (
             <div>Fetching...</div>
           ) : data ? (
