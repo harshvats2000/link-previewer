@@ -66,11 +66,13 @@ header {
 .card {
   border: 1px solid black;
   border-radius: 4px;
-  padding: 10px;
   width: 320px;
   max-width: 100%;
   background: rgba(255, 255, 255, 0.1);
   box-shadow: rgba(0, 0, 0, 0.6) 0px 2px 15px 0px;
+}
+.card-body {
+  padding: 0 10px 10px;
 }
 .card h2,
 .card p {

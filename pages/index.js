@@ -93,7 +93,7 @@ export default function Home() {
                     // width="100"
                   />
                 </div>
-                <div>
+                <div className="card-body">
                   <h2 className="title">{data.title}</h2>
                   <p className="desc">{data.desc}</p>
                 </div>
@@ -104,7 +104,7 @@ export default function Home() {
           {!fetching && data?.favicon && (
             <div style={{ display: "flex", alignItems: "center", marginTop: 20 }}>
               <span style={{ marginRight: 5 }}>Favicon: </span>
-              <img src={data.favicon} />
+              <img src={data.favicon} style={{ background: "white" }} />
             </div>
           )}
           {!fetching && data?.sizeInBytes && (
