@@ -81,7 +81,12 @@ export default function Home() {
         <div>
           <input placeholder="Type url like example.com" onChange={onChange} />
           {fetching ? (
-            <div>Fetching...</div>
+            <div>
+              <div className="lds-ripple">
+                <div></div>
+                <div></div>
+              </div>
+            </div>
           ) : data ? (
             <div className="preview">
               <div className="card">
